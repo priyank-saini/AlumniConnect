@@ -1,1 +1,1 @@
-# AlumniConnect
+Social Media Application
