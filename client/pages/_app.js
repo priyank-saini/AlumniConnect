@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/styles/globals.css"; // Ensure you only have one import for global styles
 
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -13,11 +13,22 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import authReducer from "./state/index"; 
-import "../styles/globals.css"; 
+import storage from "redux-persist/lib/storage"; // Local storage for web
 
-const persistConfig = { key: "root", storage, version: 1 };
+import authReducer from "./state/index"; // Your auth reducer
+
+// Create a noop storage for server-side rendering
+const createNoopStorage = () => {
+  return {
+    getItem: (_key) => Promise.resolve(null),
+    setItem: (_key, value) => Promise.resolve(value),
+    removeItem: (_key) => Promise.resolve(),
+  };
+};
+
+const storageToUse = typeof window !== 'undefined' ? storage : createNoopStorage();
+
+const persistConfig = { key: "root", storage: storageToUse, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 
 const store = configureStore({

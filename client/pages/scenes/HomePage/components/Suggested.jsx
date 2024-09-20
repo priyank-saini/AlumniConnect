@@ -1,23 +1,95 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { Avatar, Button, Typography, Box } from "@mui/material";
 
-function Suggested({ image, username, location }) {
+function Suggested({
+  currentUserId,
+  friendUserId,
+  picturePath,
+  firstName,
+  lastName,
+  location,
+  token,
+}) {
+  const [isFriend, setIsFriend] = useState(false); // State to track if the user is a friend
+  const [error, setError] = useState(null); // Error state for handling errors
+
+  const addRemoveFriend = async () => {
+    if (!token) {
+      setError("No authentication token found.");
+      return;
+    }
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:3001/users/${currentUserId}/${friendUserId}`,
+        null, // No request body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsFriend(!isFriend); // Toggle the friend status
+    } catch (error) {
+      console.error("Unable to add/remove friend:", error);
+      setError("An error occurred while updating the friend status.");
+    }
+  };
+
   return (
-    <div className="flex gap-5 items-center">
-      <div className="w-[55px] h-[55px] rounded-full">
-        <img className="w-full h-full obejct-cover rounded-full" src={image} />
-      </div>
+    <Box display="flex" gap={2} alignItems="center">
+      {/* Profile Picture */}
+      <Avatar
+        alt={`${firstName} ${lastName}`}
+        src={picturePath}
+        sx={{ width: 55, height: 55 }}
+      />
 
-      <div className="flex w-[70%] justify-between items-center">
-        <div>
-          <p className="text-[20px] font-[700]">{username}</p>
-          <p className="text-[15px] font-[500]">{location}</p>
-        </div>
+      {/* User Info and Button */}
+      <Box
+        flex={1}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Box>
+          <Typography variant="h6" fontWeight={700}>
+            {`${firstName} ${lastName}`}
+          </Typography>
+          <Typography variant="body2" fontWeight={500}>
+            {location}
+          </Typography>
+        </Box>
 
-        <button className="w-[40px] h-[40px] bg-[#eaeaea] rounded-full flex justify-center items-center">
-            <img src="assets/add-friend.png" className="obejct-cover w-[28px] h-[28px]"/>
-        </button>
-      </div>
-    </div>
+        {/* Action Button */}
+        <Button
+          onClick={addRemoveFriend}
+          variant="outlined"
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            backgroundColor: "#eaeaea",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            "&:hover": {
+              backgroundColor: "#d0d0d0",
+            },
+          }}
+        >
+          <img
+            src="assets/add-friend.png"
+            alt="Add Friend"
+            style={{ width: 28, height: 28 }}
+          />
+        </Button>
+      </Box>
+
+      {/* Error Message */}
+      {error && <Typography color="error">{error}</Typography>}
+    </Box>
   );
 }
 

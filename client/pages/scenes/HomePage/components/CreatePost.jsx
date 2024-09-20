@@ -1,17 +1,28 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Avatar,
+  IconButton,
+} from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
-function CreatePost() {
-  const { _id } = useSelector((state) => state.user); // Get user ID from Redux
-  const token = useSelector((state) => state.token); // Get token from Redux
-  const [desc, setDesc] = useState(""); // Post description
-  const [picture, setPicture] = useState(null); // File state
-  const [error, setError] = useState(null); // Error handling
-  const [successMessage, setSuccessMessage] = useState(null); // Success message handling
+function CreatePost({ userId, picturePath }) {
+  const _id = userId;
+  const token = useSelector((state) => state.token);
+  const [desc, setDesc] = useState("");
+  const [picture, setPicture] = useState(null);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!token || !_id) {
       setError("No authentication token or user ID found.");
@@ -32,19 +43,17 @@ function CreatePost() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", 
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       // Handle successful response
-      console.log(response.data);
-      console.log("Post created with picture path:", response.data.picturePath);
       setSuccessMessage("Post created successfully!");
-      setDesc(""); // Clear description
-      setPicture(null); // Clear selected file
+      setDesc("");
+      setPicture(null);
+      router.push("/home");
     } catch (error) {
-      console.error(error);
       setError(
         error.response?.data?.message ||
           "An error occurred while creating the post."
@@ -53,65 +62,84 @@ function CreatePost() {
   };
 
   return (
-    <form
+    <Box
+      component="form"
       onSubmit={handleSubmit}
       method="post"
-      enctype="multipart/form-data"
-      action="/home"
-      className="w-full h-full bg-white rounded-[25px] flex flex-col gap-5 px-[30px] py-[20px]"
+      encType="multipart/form-data"
+      sx={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: "white",
+        borderRadius: "25px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        paddingX: 3,
+        paddingY: 2,
+      }}
     >
-      <div>
-        <div className="flex flex-row justify-between">
-          {/* Profile */}
-          <div className="w-[60px] h-[60px] rounded-full">
-            <img
-              src="assets/man.png"
-              className="w-full h-full object-cover rounded-full"
-              alt="Profile"
-            />
-          </div>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        {/* Profile */}
+        <Avatar
+          alt="Profile"
+          src={picturePath}
+          sx={{ width: 60, height: 60 }}
+        />
 
-          {/* What's Happening */}
-          <input
-            type="text"
-            value={desc} // Bind value to state
-            onChange={(e) => setDesc(e.target.value)}
-            placeholder="What's on your mind?"
-            className="px-[10px] py-[5px] w-[85%] h-[60px] bg-[#eeeeee] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
-          />
-        </div>
-      </div>
-      <div className="flex flex-row justify-between items-center">
+        {/* What's Happening */}
+        <TextField
+          variant="outlined"
+          fullWidth
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          placeholder="What's on your mind?"
+          sx={{ marginLeft: 2, backgroundColor: "#eeeeee", borderRadius: 1 }}
+        />
+      </Box>
+
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         {/* Upload Section */}
-        <label className="flex gap-2 items-center cursor-pointer">
-          <img
-            src="assets/upload.png"
-            className="w-[25px] h-[25px]"
-            alt="Upload"
-          />
-          <span className="text-[16px]">Photos</span>
+        <IconButton
+          color="primary"
+          aria-label="upload picture"
+          component="label"
+        >
           <input
+            hidden
+            accept="image/*"
             type="file"
-            name="picture"
             onChange={(e) => setPicture(e.target.files[0])}
-            className="hidden"
           />
-        </label>
+          <PhotoCamera />
+          <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
+            Photos
+          </Typography>
+        </IconButton>
 
         {/* Submit Button */}
-        <button
+        <Button
+          variant="contained"
+          color="primary"
           type="submit"
-          className="bg-[#000AFF] rounded-[25px] px-[20px] py-[10px] font-bold text-[16px] text-white"
+          sx={{ borderRadius: "25px", paddingX: 4, paddingY: 1 }}
         >
           Post
-        </button>
-      </div>
-      {error && <p className="text-red-500">{error}</p>}
+        </Button>
+      </Box>
+
+      {/* Error and Success Messages */}
+      {error && (
+        <Typography color="error" variant="body2">
+          {error}
+        </Typography>
+      )}
       {successMessage && (
-        <p className="text-green-500">{successMessage}</p>
-      )}{" "}
-      {/* Display success message */}
-    </form>
+        <Typography color="success.main" variant="body2">
+          {successMessage}
+        </Typography>
+      )}
+    </Box>
   );
 }
 

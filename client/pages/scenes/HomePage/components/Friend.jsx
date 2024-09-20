@@ -1,26 +1,42 @@
-import React from 'react'
+import React from "react";
+import { Avatar, Typography, Box, Badge } from "@mui/material";
 
-function Friend({image, username, location, isActive}) {
+function Friend({ picturePath, firstName, lastName, location, isActive }) {
   return (
-    <div className="flex gap-5 items-center">
-      <div className="w-[55px] h-[55px] rounded-full">
-        <img className="w-full h-full obejct-cover rounded-full" src={image} />
-      </div>
+    <Box display="flex" gap={2} alignItems="center">
+      {/* Avatar with image */}
+      <Avatar
+        alt={`${firstName} ${lastName}`}
+        src={picturePath}
+        sx={{ width: 55, height: 55 }}
+      />
 
-      <div className="flex flex-col w-[70%]">
-        <div className="flex justify-between w-full items-center">
-          <p className="text-[20px] font-[700]">{username}</p>
-          <div
-            className={`w-[12px] h-[12px] ${
-              isActive ? "bg-green-500" : "bg-red-500"
-            } rounded-full`}
+      {/* Friend Info */}
+      <Box flex={1}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          {/* Name */}
+          <Typography variant="h6" fontWeight={700}>
+            {`${firstName} ${lastName}`}
+          </Typography>
+
+          {/* Active status with Badge */}
+          <Badge
+            variant="dot"
+            color={isActive ? "success" : "error"}
+            overlap="circular"
+            sx={{
+              "& .MuiBadge-dot": { height: 12, width: 12, borderRadius: "50%" },
+            }}
           />
-        </div>
+        </Box>
 
-        <p className="text-[15px] font-[500]">{location}</p>
-      </div>
-    </div>
+        {/* Location */}
+        <Typography variant="body2" fontWeight={500} color="textSecondary">
+          {location}
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 
-export default Friend
+export default Friend;

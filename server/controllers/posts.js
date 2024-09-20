@@ -49,7 +49,7 @@ export const createPost = async (req, res) => {
 //READ
 export const getFeedPosts = async (req, res) => {
     try {
-        const post = await Post.find().sort({ createdAt: -1 });;
+        const post = await Post.find().sort({ createdAt: -1 });
         res.status(200).json(post);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -69,24 +69,59 @@ export const getUserPosts = async (req, res) => {
 //UPDATE
 export const likePost = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const { userId } = req.body;
         const post = await Post.findById(id);
-        const isLiked = await post.likes(userId);
+        const isLiked = post.likes.get(userId);
 
-        if(isLiked) {
+        if (isLiked) {
             post.likes.delete(userId);
-        }
-        else {
+        } else {
             post.likes.set(userId, true);
         }
 
         const updatedPost = await Post.findByIdAndUpdate(
-            id, {likes: post.likes}, {new: true}
+            id,
+            { likes: post.likes },
+            { new: true }
         );
 
         res.status(200).json(updatedPost);
-    } catch (error) {    
-        res.status(404).json({ message: error.message });
+    } catch (err) {
+        res.status(404).json({ message: err.message });
     }
-}
+};
+
+//COMMENT
+export const addComment = async (req, res) => {
+    try {
+        const { id } = req.params; // Post ID
+        const { userId, text } = req.body;
+
+        if (!text.trim()) {
+            return res.status(400).json({ message: "Comment cannot be empty" });
+        }
+
+        // Find the post by ID
+        const post = await Post.findById(id);
+        const user = await User.findById(userId);
+
+        // Add the new comment to the comments array
+        const newComment = {
+            userId,
+            firstName: user.firstName,
+            text,
+            createdAt: new Date(),
+        };
+
+        post.comments.push(newComment);
+
+        // Save the updated post
+        const updatedPost = await post.save();
+
+        // Return the updated post with the new comment
+        res.status(200).json(updatedPost);
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+};

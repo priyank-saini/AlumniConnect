@@ -1,25 +1,36 @@
-"use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setLogin } from "@/pages/state";
+import { setLogin } from "@/pages/state"; // Make sure this path is correct
+import { TextField, Button, Alert } from "@mui/material";
 
 export default function Login() {
-    const loginText = "Sign in.".split(" "); 
+    const loginText = "Sign in.".split(" ");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
     const dispatch = useDispatch();
     const [error, setError] = useState("");
 
+    // Handle Google OAuth redirection to backend
+    const handleGoogleAuth = async (e) => {
+        e.preventDefault();
+        try {
+            // Redirect to the backend Google authentication endpoint
+            window.location.href = "http://localhost:3001/auth/google";
+        } catch (error) {
+            console.log("Error in Google auth: ", error);
+        }
+    }
+
+    // Handle traditional email/password login
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post("http://localhost:3001/auth/login", { email, password });
-            console.log(response.data);
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 dispatch(setLogin({
@@ -36,20 +47,18 @@ export default function Login() {
         }
     };
 
-    { error && <p className="text-red-500">{error}</p> }
-
     return (
         <div className="flex flex-col h-screen bg-white justify-center gap-10">
             {/* Logo */}
             <div className="flex flex-col gap-5 justify-center items-center">
-                <div className="w-[150px] flex">
+                <div className="w-[120px] flex">
                     <img src="assets/lnmiit.png" alt="" />
                 </div>
-                <div className="w-[400px] flex">
+                <div className="w-[350px] flex">
                     <img src="assets/logo.png" alt="" />
                 </div>
             </div>
-            
+
             <div className="flex justify-center items-center">
                 {/* Left Side */}
                 <div className="w-1/3 ml-20 h-full">
@@ -62,8 +71,8 @@ export default function Login() {
                 {/* Right Side */}
                 <div className="w-1/2">
                     <div className="flex justify-center items-center">
-                        <div className="flex flex-col gap-y-10 relative justify-center items-start">
-                            <div className="Login text-zinc-700 text-5xl font-bold">
+                        <div className="flex flex-col gap-y-8 relative justify-center items-start">
+                            <div className="Login text-zinc-700 text-4xl font-bold">
                                 {loginText.map((el, i) => (
                                     <motion.span
                                         initial={{ opacity: 0 }}
@@ -75,46 +84,61 @@ export default function Login() {
                                     </motion.span>
                                 ))}
                             </div>
-                            <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
-                                <input
+                            <form className="flex flex-col gap-6 w-[400px]" onSubmit={handleSubmit}>
+                                {error && <Alert severity="error">{error}</Alert>}
+                                <TextField
+                                    label="Email"
                                     type="email"
                                     name="email"
-                                    placeholder="Enter your username or email"
+                                    variant="outlined"
+                                    fullWidth
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="px-4 h-[4rem] w-[30rem] font-normal text-1xl shadow-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  rounded-md"
                                 />
-                                <input
+                                <TextField
+                                    label="Password"
                                     type="password"
                                     name="password"
-                                    placeholder="Password"
+                                    variant="outlined"
+                                    fullWidth
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="px-4 h-[4rem] w-[30rem] font-normal text-1xl shadow-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  rounded-md"
                                 />
 
-                                <div className="flex w-[30rem] flex-row justify-between">
+                                <div className="flex w-full flex-row justify-between">
                                     <Link
                                         href="/signup"
-                                        className="text-blue-700 underline underline-offset-auto font-normal"
+                                        className="text-blue-700 underline underline-offset-auto font-normal text-sm"
                                     >
                                         New User? Sign Up
                                     </Link>
                                     <Link
                                         href="/login/Forget"
-                                        className="text-blue-700 underline underline-offset-auto font-normal"
+                                        className="text-blue-700 underline underline-offset-auto font-normal text-sm"
                                     >
                                         Forgot Password?
                                     </Link>
                                 </div>
 
-                                <button type="submit" className="h-[4rem] w-[30rem] font-bold text-2xl bg-[#0056FE] hover:bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-white shadow-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    fullWidth
+                                    size="large"
+                                    sx={{ backgroundColor: "#0056FE", '&:hover': { backgroundColor: "#0044CC" }, color: "white", fontStyle: "bold" }}
+                                >
                                     Sign in
-                                </button>
+                                </Button>
                             </form>
 
-                            <button className="flex justify-center items-center gap-4 h-[4rem] w-[30rem] font-regular text- 2xl bg-white rounded-md shadow-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                <img src="assets/Google.svg" alt="google" className="w-[2rem]" />
+                            <Button
+                                fullWidth
+                                size="large"
+                                variant="outlined"
+                                sx={{ color: "#0056FE" }}
+                                onClick={handleGoogleAuth}
+                                startIcon={<img src="assets/Google.svg" alt="google" style={{ width: "1.5rem" }} />}
+                            >
                                 Sign in with Google
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

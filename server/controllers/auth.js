@@ -23,7 +23,6 @@ export const register = async (req, res) => {
             const response = await uploadOnCloudinary(localFilePath);
             if (response) {
                 pictureUrl = response.url; 
-                fs.unlinkSync(localFilePath); 
             }
         }
 
@@ -71,8 +70,18 @@ export const login = async(req, res) => {
 
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
         delete user.password;
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false, // Set true for HTTPS (you can customize this based on your environment)
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+        });
+
+        console.log(user);
+
         res.status(200).json({token, user});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
+

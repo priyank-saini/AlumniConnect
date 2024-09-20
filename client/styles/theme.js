@@ -21,7 +21,7 @@ export const colorTokens = {
         200: "#99EEFD",
         300: "#66E6FC",
         400: "#33DDFB",
-        500: "#00D5FA",
+        500: "#000AFF", // Primary color set to #000AFF
         600: "#00A0BC",
         700: "#006B7D",
         800: "#00353F",
@@ -38,68 +38,74 @@ export const themeSettings = (mode) => {
                 ? {
                     // palette values for dark mode
                     primary: {
-                        dark: colorTokens.primary[200],
-                        main: colorTokens.primary[500],
-                        light: colorTokens.primary[800],
+                        dark: colorTokens.primary[300], // Lighter version of #000AFF
+                        main: colorTokens.primary[500], // Main color #000AFF
+                        light: colorTokens.primary[700], // Darker version
                     },
                     neutral: {
-                        dark: colorTokens.grey[100],
-                        main: colorTokens.grey[200],
-                        mediumMain: colorTokens.grey[300],
-                        medium: colorTokens.grey[400],
-                        light: colorTokens.grey[700],
+                        dark: colorTokens.grey[100], // Contrast text
+                        main: colorTokens.grey[300], // Neutral color for elements
+                        mediumMain: colorTokens.grey[400],
+                        medium: colorTokens.grey[500],
+                        light: colorTokens.grey[700], // Softer neutral
                     },
                     background: {
-                        default: colorTokens.grey[900],
-                        alt: colorTokens.grey[800],
+                        default: colorTokens.grey[900], // Dark background
+                        alt: colorTokens.grey[800], // Slightly lighter for contrast
                     },
                 }
                 : {
                     // palette values for light mode
                     primary: {
-                        dark: colorTokens.primary[700],
-                        main: colorTokens.primary[500],
-                        light: colorTokens.primary[50],
+                        dark: colorTokens.primary[700], // Darker shade
+                        main: colorTokens.primary[500], // Main color #000AFF
+                        light: colorTokens.primary[50],  // Very light shade
                     },
                     neutral: {
-                        dark: colorTokens.grey[700],
-                        main: colorTokens.grey[500],
+                        dark: colorTokens.grey[700], // Text and elements
+                        main: colorTokens.grey[500], // Main neutral color
                         mediumMain: colorTokens.grey[400],
                         medium: colorTokens.grey[300],
-                        light: colorTokens.grey[50],
+                        light: colorTokens.grey[50],  // Soft backgrounds
                     },
                     background: {
-                        default: colorTokens.grey[10],
-                        alt: colorTokens.grey[0],
+                        default: colorTokens.grey[10], // Light background
+                        alt: colorTokens.grey[0],   // Pure white
                     },
                 }),
         },
         typography: {
-            fontFamily: ["Lato", "sans - serif"].join(","),
-            fontSize: 12,
+            fontFamily: ["Lato", "sans-serif"].join(","), // Improved font handling
+            fontSize: 14, // Slightly larger base font for readability
             h1: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
-                fontSize: 40,
+                fontFamily: ["Lato", "sans-serif"].join(","),
+                fontSize: 36, // Adjusted to create better hierarchy
+                fontWeight: 700,
             },
             h2: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
-                fontSize: 32,
+                fontFamily: ["Lato", "sans-serif"].join(","),
+                fontSize: 30,
+                fontWeight: 600,
             },
             h3: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
+                fontFamily: ["Lato", "sans-serif"].join(","),
                 fontSize: 24,
+                fontWeight: 600,
             },
             h4: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
+                fontFamily: ["Lato", "sans-serif"].join(","),
                 fontSize: 20,
+                fontWeight: 600,
             },
             h5: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
+                fontFamily: ["Lato", "sans-serif"].join(","),
                 fontSize: 16,
+                fontWeight: 500,
             },
             h6: {
-                fontFamily: ["Lato", "sans - serif"].join(","),
+                fontFamily: ["Lato", "sans-serif"].join(","),
                 fontSize: 14,
+                fontWeight: 500,
             },
         },
     };

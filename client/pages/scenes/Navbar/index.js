@@ -1,133 +1,203 @@
-import {useState} from "react";
+import { useState } from "react";
 import {
-    Box,
-    IconButton,
-    InputBase,
-    Typography,
-    Select,
-    MenuItem,
-    FormControl,
-    useTheme,
-    useMediaQuery
+  TextField,
+  IconButton,
+  InputBase,
+  Select,
+  MenuItem,
+  FormControl,
+  useTheme,
+  useMediaQuery,
+  Box,
+  Typography,
 } from "@mui/material";
 import {
-    Search,
-    Message,
-    DarkMode,
-    LightMode,
-    Notifications,
-    Help,
-    Menu,
-    Close
+  Message,
+  DarkMode,
+  LightMode,
+  Notifications,
+  Help,
+  Menu,
+  Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "@/pages/state";
 import { useRouter } from "next/router";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  
   const theme = useTheme();
   const router = useRouter();
-  // const neutralLight = theme.palette.neutral.light;
-  // const dark = theme.palette.neutral.dark;
-  // const background = theme.palette.background.default;
-  // const primaryLight = theme.palette.primary.light;
-  // const alt = theme.palette.background.alt;
+
+  const handleChat = () => {
+    router.push("/chat");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(setLogout());
+      router.push("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   const fullName = `${user?.firstName || "User"} ${user?.lastName || "Name"}`;
 
   return (
-    <div className="px-24 py-8 flex justify-between items-center bg-white">
+    <Box
+      px={10}
+      py={2}
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      bgcolor="background.paper"
+    >
       {/* Left Side */}
-      <div className="flex gap-10 items-center">
-        <img src="assets/lnmiit.png" alt="" className="w-[100px]"/>
-        <img src="assets/logo.png" alt="" className="w-[250px] cursor-pointer" onClick={() => router.push("/")}/>
-      </div>
+      <Box display="flex" gap={2} alignItems="center">
+        <img src="assets/lnmiit.png" alt="LNMIIT Logo" style={{ width: 80 }} />
+        <img
+          src="assets/logo.png"
+          alt="Logo"
+          style={{ width: 200, cursor: 'pointer' }}
+          onClick={() => router.push("/")}
+        />
+      </Box>
 
+      {/* Search Bar */}
       {isNonMobileScreens && (
-        <div className="flex gap-12 items-center rounded-lg py-0.5 px-6 bg-slate-200 h-[35px]">
-          <InputBase placeholder="Search..." className="text-gray-600">
-            <IconButton>
-              <Search />
-            </IconButton>
-          </InputBase>
-        </div>
+        <Box
+          display="flex"
+          alignItems="center"
+          bgcolor="grey.100"
+          borderRadius="8px"
+        >
+          <TextField
+            placeholder="Search..."
+            fullWidth
+            variant="outlined"
+            size="small"
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  type="submit"
+                  aria-label="search"
+                >
+                  <SearchIcon fontSize="small" />
+                </IconButton>
+              ),
+            }}
+            sx={{ bgcolor: 'background.default', borderRadius: '8px' }}
+          />
+        </Box>
       )}
 
       {/* Right Side */}
       {isNonMobileScreens ? (
-        <div className="flex gap-8 items-center">
+        <Box display="flex" gap={2} alignItems="center">
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
-              <DarkMode className="text-2xl" />
+              <DarkMode fontSize="small" />
             ) : (
-              <LightMode className="text-2xl text-dark" />
+              <LightMode fontSize="small" />
             )}
           </IconButton>
-          <Message className="text-2xl" />
-          <Notifications className="text-2xl" />
+          <IconButton onClick={handleChat}>
+            <Message fontSize="small" />
+          </IconButton>
+          <IconButton>
+            <Notifications fontSize="small" />
+          </IconButton>
           <FormControl variant="standard">
             <Select
               value={fullName}
               className="bg-neutral-light w-36 rounded-md p-2"
               input={<InputBase />}
+              MenuProps={{
+                PaperProps: {
+                  sx: { borderRadius: 1 }
+                }
+              }}
             >
               <MenuItem value={fullName}>
-                <span>{fullName}</span>
+                <Typography variant="body2">{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <Typography variant="body2">Log Out</Typography>
+              </MenuItem>
             </Select>
           </FormControl>
-        </div>
+        </Box>
       ) : (
         <IconButton onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}>
-          <Menu />
+          <Menu fontSize="small" />
         </IconButton>
       )}
 
       {/* Mobile Menu */}
       {!isNonMobileScreens && isMobileMenuToggled && (
-        <div className="fixed right-0 bottom-0 h-full z-10 max-w-[500px] min-w-[300px] bg-background">
-          {/* Close Button */}
-          <div className="flex justify-end p-4">
+        <Box
+          position="fixed"
+          right={0}
+          bottom={0}
+          height="100%"
+          width="300px"
+          bgcolor="background.paper"
+          zIndex="modal"
+          display="flex"
+          flexDirection="column"
+          p={2}
+        >
+          <Box display="flex" justifyContent="flex-end" mb={2}>
             <IconButton onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}>
-              <Close />
+              <Close fontSize="small" />
             </IconButton>
-          </div>
-
-          {/* Mobile Menu Items */}
-          <div className="flex flex-col gap-12 items-center">
+          </Box>
+          <Box display="flex" flexDirection="column" gap={2} alignItems="center">
             <IconButton onClick={() => dispatch(setMode())}>
               {theme.palette.mode === "dark" ? (
-                <DarkMode className="text-2xl" />
+                <DarkMode fontSize="small" />
               ) : (
-                <LightMode className="text-2xl text-dark" />
+                <LightMode fontSize="small" />
               )}
             </IconButton>
-            <Message className="text-2xl" />
-            <Notifications className="text-2xl" />
-            <Help className="text-2xl" />
+            <IconButton onClick={handleChat}>
+              <Message fontSize="small" />
+            </IconButton>
+            <IconButton>
+              <Notifications fontSize="small" />
+            </IconButton>
+            <IconButton>
+              <Help fontSize="small" />
+            </IconButton>
             <FormControl variant="standard">
               <Select
                 value={fullName}
                 className="bg-neutral-light w-36 rounded-md p-2"
                 input={<InputBase />}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { borderRadius: 1 }
+                  }
+                }}
               >
                 <MenuItem value={fullName}>
-                  <span>{fullName}</span>
+                  <Typography variant="body2">{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <Typography variant="body2">Log Out</Typography>
+                </MenuItem>
               </Select>
             </FormControl>
-          </div>
-        </div>
+          </Box>
+        </Box>
       )}
-    </div>
-    );
-}
+    </Box>
+  );
+};
 
 export default Navbar;
