@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { TextField, Button, Input, Typography, Box } from "@mui/material";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default function Signup() {
   const loginText = "Sign up.".split(" ");
@@ -16,6 +19,7 @@ export default function Signup() {
   const [occupation, setOccupation] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const router = useRouter();
+  const domain = process.env.NEXT_PUBLIC_DOMAIN;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +35,7 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("http://localhost:3001/auth/register", formData, {
+      await axios.post(`${domain}/auth/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

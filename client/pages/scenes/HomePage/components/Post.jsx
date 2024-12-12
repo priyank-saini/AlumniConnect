@@ -39,7 +39,7 @@ function Post({
   const handleLike = async () => {
     try {
       const response = await axios.patch(
-        `http://localhost:3001/posts/${postId}/like`,
+        `${process.env.NEXT_PUBLIC_DOMAIN}/posts/${postId}/like`,
         { userId: userId },
         {
           headers: {
@@ -68,7 +68,7 @@ function Post({
     if (newComment.trim()) {
       try {
         const response = await axios.patch(
-          `http://localhost:3001/posts/${postId}/comment`,
+          `${process.env.NEXT_PUBLIC_DOMAIN}/posts/${postId}/comment`,
           { userId: userId, text: newComment },
           {
             headers: {

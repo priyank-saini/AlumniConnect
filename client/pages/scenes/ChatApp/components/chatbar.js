@@ -19,7 +19,7 @@ function Chatbar({ userId, conversationId, receipientName, receipientProfile, so
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/chat/conversations/${conversationId}/messages`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/chat/conversations/${conversationId}/messages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessages(response.data);
@@ -64,7 +64,7 @@ function Chatbar({ userId, conversationId, receipientName, receipientProfile, so
 
       // Optionally save message to the server
       const response = await axios.post(
-        'http://localhost:3001/chat/messages',
+        `${process.env.NEXT_PUBLIC_DOMAIN}/chat/messages`,
         { conversationId, senderId: userId, text: message },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -16,7 +16,7 @@ function ChatApp() {
     // Initialize the socket and connect to the server
     useEffect(() => {
         // Use an environment variable for the socket URL
-        const socketUrl = 'http://localhost:3001';
+        const socketUrl = `${process.env.NEXT_PUBLIC_DOMAIN}`;
 
         // Initialize the socket connection
         const newSocket = io(socketUrl);

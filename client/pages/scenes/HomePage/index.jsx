@@ -12,6 +12,9 @@ import CreatePost from "./Components/CreatePost";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { setLogin } from "@/pages/state";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -21,6 +24,7 @@ const Home = () => {
   const [suggested, setSuggested] = useState([]);
   const router = useRouter();
   const dispatch = useDispatch();
+  const domain = process.env.NEXT_PUBLIC_DOMAIN;
 
   const { _id, picturePath } = useSelector((state) => state.user ?? {});
   const token = useSelector((state) => state.token ?? {});
@@ -57,7 +61,7 @@ const Home = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:3001/posts", {
+        const response = await axios.get(`${domain}/posts`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -82,14 +86,11 @@ const Home = () => {
       }
 
       try {
-        const response = await axios.get(
-          `http://localhost:3001/users/${_id}/friends`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${domain}/users/${_id}/friends`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setFriends(response.data);
       } catch (err) {
         setError("Failed to load friends. Unauthorized or bad request.");
@@ -110,14 +111,11 @@ const Home = () => {
       }
 
       try {
-        const response = await axios.get(
-          `http://localhost:3001/users/${_id}/suggested`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${domain}/users/${_id}/suggested`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setSuggested(response.data);
       } catch (err) {
         setError(

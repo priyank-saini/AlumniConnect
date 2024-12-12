@@ -4,8 +4,11 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setLogin } from "@/pages/state"; // Make sure this path is correct
+import { setLogin } from "@/pages/state"; 
 import { TextField, Button, Alert } from "@mui/material";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default function Login() {
     const loginText = "Sign in.".split(" ");
@@ -14,13 +17,14 @@ export default function Login() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [error, setError] = useState("");
+    const domain = process.env.NEXT_PUBLIC_DOMAIN;
 
     // Handle Google OAuth redirection to backend
     const handleGoogleAuth = async (e) => {
         e.preventDefault();
         try {
             // Redirect to the backend Google authentication endpoint
-            window.location.href = "http://localhost:3001/auth/google";
+            window.location.href = `${domain}/auth/google`;
         } catch (error) {
             console.log("Error in Google auth: ", error);
         }
@@ -30,7 +34,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:3001/auth/login", { email, password });
+            const response = await axios.post(`${domain}/auth/login`, { email, password });
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 dispatch(setLogin({

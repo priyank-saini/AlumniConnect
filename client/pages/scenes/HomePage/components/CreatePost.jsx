@@ -38,7 +38,7 @@ function CreatePost({ userId, picturePath }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/posts",
+        `${process.env.NEXT_PUBLIC_DOMAIN}/posts`,
         formData,
         {
           headers: {

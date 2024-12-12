@@ -19,7 +19,7 @@ function Sidebar({ userId, setSelectedConversation, setSelectedReceipient, setSe
 
     const getConversations = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/chat/conversations', {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/chat/conversations`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ function Sidebar({ userId, setSelectedConversation, setSelectedReceipient, setSe
 
     const getFriends = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/users/${userId}/friends`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/users/${userId}/friends`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function Sidebar({ userId, setSelectedConversation, setSelectedReceipient, setSe
 
     const createConversation = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/chat/conversations', {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_DOMAIN}/chat/conversations`, {
                 participants: [userId, ...selectedFriends],
             }, {
                 headers: {

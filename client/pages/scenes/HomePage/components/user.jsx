@@ -25,7 +25,7 @@ function User({ userId, picturePath }) {
 
       try {
         const response = await axios.get(
-          `http://localhost:3001/users/${userId}`,
+          `${process.env.NEXT_PUBLIC_DOMAIN}/users/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

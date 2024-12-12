@@ -22,7 +22,7 @@ function Suggested({
 
     try {
       const response = await axios.patch(
-        `http://localhost:3001/users/${currentUserId}/${friendUserId}`,
+        `${process.env.NEXT_PUBLIC_DOMAIN}/users/${currentUserId}/${friendUserId}`,
         null, // No request body
         {
           headers: {

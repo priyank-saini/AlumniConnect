@@ -24,6 +24,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "@/pages/state";
 import { useRouter } from "next/router";
 import SearchIcon from "@mui/icons-material/Search";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
